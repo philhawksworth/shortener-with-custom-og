@@ -8,7 +8,7 @@
 
 
 # Do this instead of looking for a shortlink redirect 
-## so we can sercve local images 
+# so we can serve local images 
 [[redirects]]
   from = "/image/*"
   to = "/image/:splat"
