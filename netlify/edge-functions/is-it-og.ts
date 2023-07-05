@@ -4,8 +4,10 @@ import page from "../og-page.js";
 
 
 // Prod domain or domain for testing with netlify dev
-const rootDomain = "https://findthat.at";
-// const rootDomain = "https://test--findthatat.netlify.live"; 
+// The domain for this URL shortener
+const rootDomain = "https://findthat.at"; 
+// Or a live local URL for testing. Running with `ntl dev --live=test` 
+// const rootDomain = "https://test--findthatat.netlify.live";  \
 
 
 export default async (request: Request, context: Context) => {
@@ -20,14 +22,14 @@ export default async (request: Request, context: Context) => {
     return;
   }
   
-  // User agents of referrers that we server an OG image to 
+  // User agents of referrers that we serve an OG image to 
   // include these strings
   const unfurlers = [
     "slack",
     "Twitterbot",
     "LinkedInBot",
     "Mastodon",
-    // "Mozilla" // for testing
+    // "Mozilla" // for testing how the custom template looks directly in a browser
   ];
 
   // the requesting user agent
@@ -37,7 +39,7 @@ export default async (request: Request, context: Context) => {
   // return a page with the correct OG data and image link
   if (unfurlers.some(v => agent?.includes(v))) {
     
-    // get the title and description from the final destination page
+    // get the og data from the final destination page
     const destination = await fetch(`${rootDomain}/${url.pathname}`);
     const html = await destination.text();
     const $ = cheerio.load(html);
@@ -47,7 +49,7 @@ export default async (request: Request, context: Context) => {
     const og_og =  $('meta[property="og:image"]').attr('content') || "";
       
     // do we have a custom image?
-    // no image? Pass the request on 
+    // no image? Pass the request on. 
     // Twitter downgrades YouTube URLs to small cards, so let's offer 
     // a large card even if we don't have a custom OG image of our own
     const image = await fetch(`${rootDomain}/image${url.pathname}.png`);
@@ -66,7 +68,6 @@ export default async (request: Request, context: Context) => {
       domain: rootDomain,
       original_og: site == "YouTube" ? og_og : null
     });
-
     return new Response(ogPage, {
       headers: { "content-type": "text/html" },
     });
@@ -81,6 +82,7 @@ export default async (request: Request, context: Context) => {
 };
 
 // All requests to this domain come through here
+// If something fails, just get out of the way
 export const config: Config = {
   path: "/*",
   onError: "bypass"
