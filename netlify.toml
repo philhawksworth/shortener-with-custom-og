@@ -7,7 +7,6 @@
   publish = "./dist"
 
 
-
 # Do this instead of looking for a shortlink redirect 
 ## so we can sercve local images 
 [[redirects]]

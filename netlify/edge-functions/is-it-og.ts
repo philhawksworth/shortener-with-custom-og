@@ -3,15 +3,12 @@ import type { Config, Context } from "https://edge.netlify.com";
 import page from "../og-page.js";
 
 
-// Prod domain or domain for testing with netlify dev
-
-
 export default async (request: Request, context: Context) => {
   
   // The domain for this URL shortener as provided by Netlify's environment
-  // Or a live local URL for testing. Running with `ntl dev --live=test` 
+  // or a live local URL for testing. 
   const rootDomain = context.site.url; 
-  // const rootDomain = "https://test--findthatat.netlify.live";  
+  // const rootDomain = `https://test--${context.site.name}.netlify.live`;  // Running with `npm start` to access Netlify Dev Live
 
   // What is being requested
   const url = new URL(request.url);
