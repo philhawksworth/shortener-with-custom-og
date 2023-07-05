@@ -1,2 +1,7 @@
 node_modules
 .netlify
+.DS_Store
+
+# The redirects file gets copied across 
+# from the root during the build
+/dist/_redirects
