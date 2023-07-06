@@ -13,13 +13,6 @@ export default async (request: Request, context: Context) => {
   // What is being requested
   const url = new URL(request.url);
 
-  // if the request is for an image
-  // just let Netlify handle it as usual. We're done here.
-  if(url.pathname.startsWith("/image/")) {
-    context.log("Serve an image - ", url.pathname);
-    return;
-  }
-  
   // User agents of referrers that we serve an OG image to 
   // include these strings
   const unfurlers = [
@@ -27,11 +20,16 @@ export default async (request: Request, context: Context) => {
     "Twitterbot",
     "LinkedInBot",
     "Mastodon",
+    "Bluesky",
+    "facebookexternalhit",
     // "Mozilla" // for testing how the custom template looks directly in a browser
   ];
 
   // the requesting user agent
   const agent = request.headers.get("user-agent");
+
+    // Help discover user-agents on all the new social media platforms
+    context.log()
     
   // if this is unfurling an OG
   // return a page with the correct OG data and image link
@@ -83,5 +81,6 @@ export default async (request: Request, context: Context) => {
 // If something fails, just get out of the way
 export const config: Config = {
   path: "/*",
+  excludedPattern: ["/image/"],
   onError: "bypass"
 };
